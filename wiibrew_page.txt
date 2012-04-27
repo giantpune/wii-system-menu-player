@@ -1,0 +1,46 @@
+﻿{{infobox homebrew
+ | title     = Wii System Menu Player
+ | image     = [[File:J-Favs-Wii-logo.PNG‎]]
+ | type      = Other
+ | author   = [[User:Dimok|Dimok]], [[User:giantpune|giantpune]]
+ | version   = v0.1
+ | licence   = GPL
+ | download  = http://code.google.com/p/wii-system-menu-player/downloads/list
+ | source    = http://code.google.com/p/wii-system-menu-player/source/checkout
+ | website   = http://code.google.com/p/wii-system-menu-player
+ | peripherals   = {{Wiimote4}} {{Nunchuck}} {{ClassicController}} {{FrontSD}} {{FrontSDHC}} {{Internet}}
+ | hbb=no
+}}
+The '''Wii System Menu Player''' (a.k.a. '''mitschwanzenegger''') is a reconstruct of the System Menu with the original resource files of the System Menu.
+It loads the resource and animation files from the NAND and replicates the behaviour of the System Menu.
+
+==Features==
+* Main system menu layout
+* Settings menu layout
+* Home menu layout
+* Game saves menu layout
+* Channel edit menu layout
+* Full screen animation banners
+* Icon animation banners
+* Several system animation banners (e.g. disc/gc channel)
+* Use and demonstration of the Wii animation and layout system (brlan/brlyt)
+* Gamecube/Classic/WiiMote controller support
+* Widescreen detection
+* Language detection
+
+== Screenshots ==
+{| class="wikitable"
+|-
+! '''The Wii Health Screen''' !! '''The System Menu''' !! '''The System Settings''' 
+|-
+| [[File:Wsmplayer_healthscreen.png‎|frameless|200px]] || [[File:1335549256.png|frameless|200px]] || [[File:Wsmplayer_settings.png|frameless|200px]]
+|-
+|}
+
+{| class="wikitable"
+|-
+! '''Save Game Menu''' !! '''Channel Menu''' !! '''Home Menu''' !! '''Banner Animated Icons'''
+|-
+| [[File:Wsmplayer_savegames.png‎|frameless|200px]] || [[File:Wsmplayer channels.png|frameless|200px]] || [[File:Wsmplayer_homemenu.png‎|frameless|200px]] || [[File:Wsmplayer_animation.png‎|frameless|200px]]
+|-
+|}
