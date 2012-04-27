@@ -2,7 +2,7 @@
 <app version="1">
   <name>mitschwanzenegger</name>
   <coder>Dimok and Giantpune</coder>
-  <version>40.1</version>
+  <version>0.1</version>
   <release_date>20120427</release_date>
   <short_description>Wii System Menu Player</short_description>
   <long_description>A program that plays the system menu and other wii animations.</long_description>
