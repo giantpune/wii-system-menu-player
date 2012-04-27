@@ -1,0 +1,17 @@
+some of the stuff that isnt done
+
+* window class isnt done
+	the tooltip (baloon.ash), homemenu (batteries), shadow for dialogs (dlgWdw.ash) depend on it getting done
+
+* the text looks grainy and has some artifacts especially when scaled small
+
+* complete lack of brsar sounds. :(
+
+* all the data management screens are using 4:3.  they look bad using 16:9.  i think it has something to do with the missing
+	stuff from the Window class still
+
+* some parts of the settings/data management are not done
+	settings - requires RSO crap
+	gamecube data management - theres 6 layouts and 80 animation files to sift through.  far too much for something ill never use anyways
+
+* im thinking that the bounding panes are used for button hot-spots, not using hardcoded numbers.  we can probably change to using those
