@@ -107,7 +107,7 @@ void WiiCursors::Render( Mtx &modelview, const Vec2f &ScreenProps, bool widescre
 
 			if( ( i == 0 ) && ( lastX != wpad.ir.x || lastY != wpad.ir.y ) )
 			{
-				gprintf( "pos: %.0f, %.0f\n", wpad.ir.x, wpad.ir.y );
+				//gprintf( "pos: %.0f, %.0f\n", wpad.ir.x, wpad.ir.y );
 				lastX = wpad.ir.x;
 				lastY = wpad.ir.y;
 			}
