@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<app version="1">
+  <name>mitschwanzenegger</name>
+  <coder>Dimok and Giantpune</coder>
+  <version>40.1</version>
+  <release_date>20120427</release_date>
+  <short_description>System Menu Player</short_description>
+  <long_description>A program that plays the ssystem menu and other wii animations.</long_description>
+  <no_ios_reload/>
+</app>
