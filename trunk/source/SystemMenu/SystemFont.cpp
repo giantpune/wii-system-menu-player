@@ -84,6 +84,7 @@ bool SystemFont::Init()
 			free(contentMap);
 			return false;
 		}
+		break;
 	}
 
 	free( contentMap );
