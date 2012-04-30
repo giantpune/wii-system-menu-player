@@ -36,8 +36,8 @@ typedef struct
 #define FLOAT_2_U8(x) ((u8)((x) > 255.0f ? 255.0f : ((x) < 0.0f ? 0.0f : (x) + 0.5f)))
 #define FLOAT_2_S16(x) ((s16)((x) > 32767.0f ? 32767.0f : ((x) < -32768.0f ? 32768.0f : (x) + 0.5f)))
 
-#define FREE( x ) free( x ); x = NULL;
-#define DELETE( x ) delete x; x = NULL
+#define FREE( x ) do{ free( x ); x = NULL; }while( 0 )
+#define DELETE( x ) do{ delete x; x = NULL; }while( 0 )
 
 #define RU(N, S) ((((N) + (S) - 1) / (S)) * (S))
 
