@@ -341,8 +341,10 @@ void Layout::SetLanguage(  std::string language )
 			foreach( Pane *pane, it->second.panes )
 			{
 				//gprintf( "   SetPane: \"%s\" %u\n", pane->getName(), hide );
-				pane->SetHide( true );
-				pane->SetVisible( false );
+				if(it->first.length() <= 3) {
+					pane->SetHide( true );
+					pane->SetVisible( false );
+				}
 			}
 		}
 		++it;
