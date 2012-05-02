@@ -35,6 +35,7 @@ bool useNandBanners = true;
 bool useHomebrewForBanners = true;
 bool mountDVD = true;
 std::string sdBannerPath = "sd:/banners/";
+std::string resourcePath;
 
 #define CURRENT_SETTINGS_VERSION	1
 #define SAVE_FILE_NAME "smPlayerSettings.xml"
@@ -116,6 +117,7 @@ void Load( int argc, char *argv[] )
 	useHomebrewForBanners = true;
 	mountDVD = true;
 	sdBannerPath = "sd:/banners/";
+	resourcePath.clear();
 
 	std::string fileName( saveFilePath + SAVE_FILE_NAME );
 
@@ -144,11 +146,12 @@ void Load( int argc, char *argv[] )
 	useHomebrewForBanners = GetXMLBool( appNode->FirstChildElement( "useHomebrewForBanners" ), true );
 	mountDVD = GetXMLBool( appNode->FirstChildElement( "mountDVD" ), true );
 	sdBannerPath = GetXMLString( appNode->FirstChildElement( "sdBannerPath" ), "sd:/banners/" );
+	resourcePath = GetXMLString( appNode->FirstChildElement( "resourcePath" ), std::string() );
 
 }
 
 /*
-  this is the xml file im using:
+  example xml file:
 
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <settings version="1">
@@ -157,6 +160,7 @@ void Load( int argc, char *argv[] )
 	<useHomebrewForBanners>true</useHomebrewForBanners>
 	<mountDVD>true</mountDVD>
 	<sdBannerPath>sd:/banners/</sdBannerPath>
+	<resourcePath>sd:/darkwii_orange_No-Spin_4.1U.csm</resourcePath>
 </settings>
 
 

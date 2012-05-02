@@ -44,6 +44,11 @@ extern bool mountDVD;
 extern std::string sdBannerPath;
 
 
+// path to read resource file.  if this is empty, use the one in the system menu.
+// otherwise, treat this as a file like "sd:/mySystemMenuResources.app"
+extern std::string resourcePath;
+
+
 // save and load
 void Load( int argc, char *argv[] );
 }

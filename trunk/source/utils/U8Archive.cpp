@@ -393,6 +393,7 @@ bool U8NandArchive::SetFile( const char* nandPath )
 		FREE( fst );
 		CloseFile();
 		gprintf( "U8NandArchive: error reading fst\n" );
+		return false;
 	}
 
 	// set name table pointer
@@ -457,31 +458,187 @@ u8* U8NandArchive::GetFileAllocated( const char *path, u32 *size ) const
 		}
 		free( ret );
 
-		/*u32 len2 = len;
+	}
+	else if( isLZ77compressed( ret ) )
+	{
+		// LZ77 with no magic word
+		if( decompressLZ77content( ret, len, &ret2, &len ) )
+		{
+			free( ret );
+			return NULL;
+		}
+		free( ret );
+	}
+	else if( *(u32*)( ret ) == 0x4C5A3737 )// LZ77
+	{
+		// LZ77 with a magic word
+		if( decompressLZ77content( ret + 4, len - 4, &ret2, &len ) )
+		{
+			free( ret );
+			return NULL;
+		}
+		free( ret );
+	}
+	else
+	{
+		// already got what we are after
+		ret2 = ret;
+	}
+
+	if( size )
+	{
+		*size = len;
+	}
+
+	// flush the cache so if there are any textures in this data, it will be ready for the GX
+	DCFlushRange( ret2, len );
+	return ret2;
+}
+
+
+
+U8FileArchive::U8FileArchive( const char* filePath )
+	: U8Archive( NULL, 0 ),
+	  fd( NULL ),
+	  dataOffset( 0 )
+{
+	if( filePath )
+	{
+		SetFile( filePath );
+	}
+}
+
+U8FileArchive::~U8FileArchive()
+{
+	if( fd )
+	{
+		fclose( fd );
+	}
+	free( fst );
+}
+
+bool U8FileArchive::SetFile( const char* filePath )
+{
+	FREE( fst );
+	FREE( name_table );
+	CloseFile();
+
+	// open file
+	if( (fd = fopen( filePath, "rb" ) ) < 0 )
+	{
+		gprintf( "U8FileArchive:  fopen( \"%s\" ) failed\n",filePath );
+		return false;
+	}
+
+	int ret;
+
+	// buffer for reading the header and stuff
+	u8* buffer = (u8*)memalign( 32, 0x800 );
+	if( !buffer )
+	{
+		CloseFile();
+		gprintf( "U8FileArchive: enomem\n" );
+		return false;
+	}
+
+	// read a chunk big enough that it should contain the U8 header if there is going to be one
+	if( (ret = fread( buffer, 0x800, 1, fd )) != 1 )
+	{
+		free( buffer );
+		CloseFile();
+		gprintf( "U8FileArchive: fread( 0x800 ) = %i\n", ret );
+		return false;
+	}
+
+	// find the start of the U8 data
+	U8Header* tagStart = (U8Header*)FindU8Tag( buffer, 0x800 );
+	if( !tagStart )
+	{
+		free( buffer );
+		CloseFile();
+		gprintf( "U8FileArchive: didn't see a U8 tag\n" );
+		return false;
+	}
+
+	// remember where in the file the U8 starts
+	dataOffset = ( (u8*)tagStart - buffer );
+
+	// allocate memory and read the fst
+	if( !(fst = (FstEntry *)memalign( 32, RU( tagStart->dataOffset - dataOffset, 32 ) ) )
+			|| ( fseek( fd, dataOffset + tagStart->rootNodeOffset, SEEK_SET ) )
+			|| ( fread( fst, tagStart->dataOffset - dataOffset, 1, fd ) != 1 )
+			|| ( fst->filelen * 0xC > tagStart->dataOffset ) )
+	{
+		gprintf( "U8FileArchive: error reading fst\n" );
+		gprintf( "%08x, %p, %p, %08x\n", dataOffset, buffer, fst, ftell( fd ) );
+		dataOffset = 0;
+		free( buffer );
+		FREE( fst );
+		CloseFile();
+		return false;
+	}
+
+	// set name table pointer
+	u32 name_table_offset = fst->filelen * 0xC;
+	name_table = ((char *)fst) + name_table_offset;
+
+	free( buffer );
+	return true;
+}
+
+u8* U8FileArchive::GetFileAllocated( const char *path, u32 *size ) const
+{
+	//gprintf( "U8FileArchive::GetFileAllocated( %s )\n" );
+	if( !path || !fst )
+	{
+		return NULL;
+	}
+
+	// find file
+	int f = EntryFromPath( path, 0 );
+	if( f < 1 || f >= (int)fst[ 0 ].filelen )
+	{
+		gprintf( "U8: \"%s\" wasn't found in the archive.\n", path );
+		return NULL;
+	}
+	if( fst[ f ].filetype )
+	{
+		gprintf( "U8: \"%s\" is a folder\n", path );
+		return NULL;
+	}
+
+	// create a buffer
+	u8* ret = (u8*)memalign( 32, RU( fst[ f ].filelen, 32 ) );
+	if( !ret )
+	{
+		gprintf( "U8: out of memory\n" );
+		return NULL;
+	}
+
+	// seek and read
+	if( fseek( fd, dataOffset + fst[ f ].fileoffset, SEEK_SET )
+			|| fread( ret, fst[ f ].filelen, 1, fd ) != 1 )
+	{
+		free( ret );
+		gprintf( "U8: error reading data from nand\n" );
+		gprintf( "fd: %i  fst[ fd ].filelen: %08x\n", f, fst[ f ].filelen );
+		return NULL;
+	}
+
+	u32 len = fst[ f ].filelen;
+	u8* ret2;
+	// determine if it needs to be decompressed
+	if( IsAshCompressed( ret, len ) )
+	{
 		// ASH0
 		ret2 = DecompressAsh( ret, len );
-		if( !ret )
+		if( !ret2 )
 		{
+			free( ret );
 			gprintf( "out of memory\n" );
 			return NULL;
 		}
-
-		u8* ret3 = DecompressAsh2( ret, len2 );
-		if( !ret3 )
-		{
-			gprintf( "out of memory 2\n" );
-			return NULL;
-		}
-		if( len != len2 || memcmp( ret3, ret2, len ) )
-		{
-			gprintf( "doesn\'t match\n" );
-		}
-		else
-		{
-			gprintf( "matches\n" );
-		}
-		exit( 0 );*/
-
+		free( ret );
 	}
 	else if( isLZ77compressed( ret ) )
 	{

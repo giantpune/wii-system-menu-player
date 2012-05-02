@@ -24,6 +24,7 @@ distribution.
 #include "gecko.h"
 #include "SaveData/databin.h"
 #include "sdcontentcrypto.h"
+#include "settings.h"
 #include "SystemMenu/SystemMenuResources.h"
 #include "SystemFont.h"
 #include "U8Archive.h"
@@ -93,29 +94,44 @@ bool SystemMenuResources::Init()
 		gprintf( "can\'t get system menu TMD\n" );
 		return false;
 	}
-
-	// determine resource cid
-	u16 idx = 0xffff;
+	u16 idx;
 	tmd_content *contents = TMD_CONTENTS( p_tmd );
-	for( u16 i = 0; i < p_tmd->num_contents; i++ )
-	{
-		if( contents[ i ].index == 1 )
-		{
-			idx = i;
-			break;
-		}
-	}
-	if( idx == 0xffff )
-	{
-		gprintf( "SM main resource not found\n" );
-		return false;
-	}
-	// build file path
-	char path[ ISFS_MAXPATH ]__attribute__((aligned( 32 )));
-	sprintf( path, "/title/00000001/00000002/content/%08x.app", contents[ idx ].cid );
 
-	// create archive to get data from that file
-	mainArc = new U8NandArchive( path );
+	// determine which file to use for resources
+	char path[ ISFS_MAXPATH ]__attribute__((aligned( 32 )));
+	if( Settings::resourcePath.size() )
+	{
+		// user-specified path
+		mainArc = new U8FileArchive( Settings::resourcePath.c_str() );
+	}
+	else
+	{
+		// default to loading from nand
+
+		// determine resource cid
+		idx = 0xffff;
+
+		for( u16 i = 0; i < p_tmd->num_contents; i++ )
+		{
+			if( contents[ i ].index == 1 )
+			{
+				idx = i;
+				break;
+			}
+		}
+		if( idx == 0xffff )
+		{
+			gprintf( "SM main resource not found\n" );
+			return false;
+		}
+
+		// build file path
+		sprintf( path, "/title/00000001/00000002/content/%08x.app", contents[ idx ].cid );
+
+		// create archive to get data from that file
+		mainArc = new U8NandArchive( path );
+	}
+
 
 	// setup bmg file
 	if( !SetupBmg( mainArc ) )
@@ -687,7 +703,7 @@ void SystemMenuResources::DestroyHealthScreen()
 	FREE( backMenuData );
 }
 
-bool SystemMenuResources::SetupBmg( U8NandArchive *arc )
+bool SystemMenuResources::SetupBmg( U8Archive *arc )
 {
 	const char *lang = CONF_GetLanguageString();
 	char path[ 64 ];

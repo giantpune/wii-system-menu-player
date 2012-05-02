@@ -113,7 +113,7 @@ protected:
 	SystemMenuResources();
 	~SystemMenuResources();
 	bool isInited;
-	U8NandArchive *mainArc;
+	U8Archive *mainArc;
 
 #define ASH_FILE( x )\
 	u32 x##AshSize;\
@@ -180,7 +180,7 @@ protected:
 	//! bmg stuff used for translating system menu strings
 	u8* bmgData;
 	u32 bmgDataLen;
-	bool SetupBmg( U8NandArchive *arc );
+	bool SetupBmg( U8Archive *arc );
 	static const u8* FindBackMenu( const u8* executable, u32 len );
 	static u8* LoadSystemMenuExecutable( u32 *outLen );
 
