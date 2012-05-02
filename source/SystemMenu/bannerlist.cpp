@@ -52,7 +52,7 @@ static void AddNandBannerPaths( u32 whichOnes )
 
 			// ignore some stuff
 			// photo, news, forcast hidden halfs
-			if( j == 1 && ( TITLE_LOWER( tid ) == 0x48415941 || TITLE_LOWER( tid ) == 0x48414741 || TITLE_LOWER( tid ) == 0x48414641 ) )
+			if( j == 1 && ( TITLE_LOWER( tid ) == 0x48414141 || TITLE_LOWER( tid ) == 0x48414741 || TITLE_LOWER( tid ) == 0x48414641 ) )
 			{
 				continue;
 			}
