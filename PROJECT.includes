@@ -1,8 +1,8 @@
-/home/j/c/smthing/smthingy/source
-/home/j/c/smthing/smthingy/source/SaveData
-/home/j/c/smthing/smthingy/source/SoundOperations
-/home/j/c/smthing/smthingy/source/SystemMenu
-/home/j/c/smthing/smthingy/source/utils
+source
+source/SaveData
+source/SoundOperations
+source/SystemMenu
+source/utils
 /home/j/devkitPRO/libogc/include
 /home/j/devkitPRO/libogc/include/bte
 /home/j/devkitPRO/libogc/include/di

@@ -24,6 +24,7 @@ distribution.
 #define U8ARCHIVE_H
 
 #include <string>
+#include <cstdio>
 #include "tools.h"
 
 class U8Archive
@@ -128,6 +129,42 @@ private:
 		{
 			ISFS_Close( fd );
 			fd = -1;
+		}
+	}
+};
+
+// class to access files from an archive that is saved in some arbatrary file that can be accessed with fopen() and friends
+// GetFile() will return NULL, use GetfileAllocated()
+class U8FileArchive : public U8Archive
+{
+public:
+	U8FileArchive( const char* filePath );
+	~U8FileArchive();
+
+	bool SetFile( const char* filePath );
+
+
+	// not implimented in this subclass...
+	void SetData( const u8 *stuff, u32 len ){}
+	u8* GetFile( const char *path, u32 *size = NULL ) const { return NULL; }
+	u8* GetFileFromFd( u32 fd, u32 *size = NULL )const { return NULL; }
+
+
+	// gets a file and copies it into a newly memalign()'d buffer
+	//! if the data looks ASH or LZ77 compressed, it is decompressed
+	u8* GetFileAllocated( const char *path, u32 *size = NULL ) const;
+
+private:
+	FILE* fd;
+
+	// where the U8 header starts within the file
+	u32 dataOffset;
+	void CloseFile()
+	{
+		if( fd )
+		{
+			fclose( fd );
+			fd = NULL;
 		}
 	}
 };
