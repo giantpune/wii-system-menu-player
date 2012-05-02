@@ -524,7 +524,7 @@ bool U8FileArchive::SetFile( const char* filePath )
 	CloseFile();
 
 	// open file
-	if( (fd = fopen( filePath, "rb" ) ) < 0 )
+	if( !(fd = fopen( filePath, "rb" ) ) )
 	{
 		gprintf( "U8FileArchive:  fopen( \"%s\" ) failed\n",filePath );
 		return false;
